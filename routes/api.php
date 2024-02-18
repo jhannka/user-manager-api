@@ -20,8 +20,9 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::resource('users', UserController::class);
-    Route::resource('category', CategoryController::class);
+
+    Route::resource('users', UserController::class)->middleware('role:admin');
+    Route::resource('category', CategoryController::class)->middleware('role:user,admin');
 });
 
 
