@@ -22,8 +22,10 @@ class AdminUserSeeder extends Seeder
             'phone_number' => '3008871405',
             'identification_card' => '1111111111',
             'birth_date' => '1990-08-11',
-            'city_code' => '0001',
+            'departament' => 4,
+            'city_code' => 144,
             'password' => Hash::make('123456789'),
+            'must_change_password' => false
         ]);
 
         if ($adminRole) {

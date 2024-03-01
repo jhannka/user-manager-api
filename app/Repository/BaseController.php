@@ -9,15 +9,18 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
 
 class BaseController extends Controller
 {
 
     protected $model;
+    protected $validation;
 
-    public function __construct($model)
+    public function __construct($model, $validation = null)
     {
         $this->model = $model;
+        $this->validation = $validation;
     }
 
     /**
@@ -110,8 +113,9 @@ class BaseController extends Controller
                 return response()->json(['error' => 'El recurso no fue encontrado.'], 404);
             }
 
+            $validatedData = $this->validateRequest($request);
 
-            $resource->update($request->all());
+            $resource->update($validatedData);
 
             return response()->json(['state' => 201, 'data' => $resource]);
         } catch (\Exception|\InvalidArgumentException|QueryException $e) {
@@ -131,13 +135,43 @@ class BaseController extends Controller
             if (!is_numeric($id)) {
                 return response()->json(['error' => 'El ID debe ser numérico.'], 422);
             }
+            $resource = $this->model->find($id)->delete();
 
-            $deletedResource = $this->model->destroy($id);
-
-            return response()->json(['state' => 201, 'data' => $deletedResource]);
+            return response()->json(
+                [
+                    'state' => 201,
+                    'data' => $resource
+                ]
+            );
         } catch (\Exception|\InvalidArgumentException|QueryException $e) {
             return response()->json(['error' => $e->getMessage()], 422);
         }
     }
+
+    private function validateRequest($request)
+    {
+        if ($this->validation !== null) {
+            $uniqueOnCreation = ['email'];
+
+            $rules = $request->all();
+
+            foreach ($uniqueOnCreation as $field) {
+                if ($request->isMethod('post')) {
+                    $rules[$field] .= '|unique:users';
+                }
+            }
+
+            $validator = Validator::make($rules, $this->validation);
+
+            if ($validator->fails()) {
+                throw new \InvalidArgumentException('Error de validación: ' . $validator->errors()->first());
+            }
+
+            return $request->all();
+        }
+
+        return $request->all();
+    }
+
 
 }
