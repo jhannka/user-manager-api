@@ -17,8 +17,10 @@ return new class extends Migration {
             $table->unsignedBigInteger('phone_number')->unique()->length(10);
             $table->string('identification_card', 11);
             $table->date('birth_date');
+            $table->unsignedBigInteger('departament')->length(6);
             $table->unsignedBigInteger('city_code')->length(6);
             $table->timestamp('email_verified_at')->nullable();
+            $table->boolean('must_change_password')->default(true);
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

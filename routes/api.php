@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\UserController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,11 +19,17 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::get('/user/auth', function (Request $request) {
+    return $request->user();
+})->middleware('auth:api');
+
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
+
     Route::resource('users', UserController::class)->middleware('role:admin');
-    Route::resource('category', CategoryController::class)->middleware('role:user,admin');
+    Route::put('reset/password/{id}', [UserController::class, 'resetPassword']);
+    Route::resource('category', CategoryController::class);
 });
 
 

@@ -24,7 +24,9 @@ class User extends Authenticatable
         'identification_card',
         'birth_date',
         'city_code',
+        'departament',
         'password',
+        'must_change_password'
     ];
 
     /**
@@ -47,6 +49,9 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    protected $with = [
+        'roles'
+    ];
     public function categories()
     {
         return $this->hasMany(Category::class);

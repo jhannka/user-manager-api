@@ -11,4 +11,9 @@ class UserRepo extends BaseRepo
     {
         return new User();
     }
+
+    public function resetPassword($request, $id)
+    {
+dd($id);
+    }
 }
