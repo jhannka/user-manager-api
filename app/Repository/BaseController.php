@@ -81,7 +81,7 @@ class BaseController extends Controller
     {
         try {
 
-            $request->request->add(['user_id' => Auth::user()->id]);
+            $request->request->add(['user_id' => Auth::id()]);
             $createdResource = $this->model->create($request->all());
 
             return response()->json(['state' => 201, 'data' => $createdResource]);
