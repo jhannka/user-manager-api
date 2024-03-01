@@ -29,7 +29,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::resource('users', UserController::class)->middleware('role:admin');
     Route::put('reset/password/{id}', [UserController::class, 'resetPassword']);
-    Route::resource('category', CategoryController::class)->middleware('role:user,admin');
+    Route::resource('category', CategoryController::class);
 });
 
 
